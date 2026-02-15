@@ -6,6 +6,22 @@ using ECommerce.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+//List<Employee> employees = new List<Employee>() { 
+//    new FullTimeEmployee(),
+//    new PartTimeEmployee(),
+//};
+
+List<IReport> reports = new List<IReport>() {
+    new StudentReport(),
+    new TeachrtReport()
+};
+
+foreach (var report in reports)
+{
+    report.GenerateReport();
+}
+
 // Add services to the container.
 
 builder.Services.AddControllers();

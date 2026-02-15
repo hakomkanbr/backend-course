@@ -5,8 +5,9 @@
 // Methods => تمثل الأفعال
 public class Person // Object
 {
+    public int Id { get; set; } // Property
     public string Name { get; set; } // Property
-    private int Age { get; set; } // Property
+    public int Age { get; set; } // Property
 
 };
 
@@ -36,10 +37,10 @@ public class Student : Person
 public interface IStudentService
 {
     public int AddStudent(Student student);
-    //public int UpdateStudent(Student student);
-    //public void DeleteStudent(int studentId);
+    public int UpdateStudent(Student student);
+    public void DeleteStudent(int studentId);
     public List<Student> GetStudents();
-    //public Student GetStudent();
+    public Student GetStudent(int id);
 };
 
 public class StudentService : IStudentService
@@ -52,11 +53,61 @@ public class StudentService : IStudentService
         return 1;
     }
 
+    public void DeleteStudent(int studentId)
+    {
+        var student = _students.FirstOrDefault(i => i.Id == studentId);
+        if (student == null) throw new Exception("Student Not Found");
+        _students.Remove(student);
+    }
+
+    public Student GetStudent(int studentId)
+    {
+        var student = _students.FirstOrDefault(i => i.Id == studentId);
+        if (student == null) throw new Exception("Student Not Found");
+        return student;
+    }
+
     public List<Student> GetStudents()
     {
         return _students;
     }
+
+    public int UpdateStudent(Student student)
+    {
+        var studentIndex = _students.FindIndex(i => i.Id == student.Id);
+        if (studentIndex == -1) throw new Exception("Student Not Found");
+
+        var newStudent = new Student();
+
+        newStudent.Name = student.Name;
+        newStudent.Age = student.Age;
+
+        _students[studentIndex] = newStudent;
+
+        return newStudent.Id;
+    }
 };
+
+//public abstract class Employee {
+//    public string Name { get; set; }
+//    public abstract decimal CalculateSalary();
+//}
+
+//public class FullTimeEmployee : Employee
+//{
+//    public override decimal CalculateSalary()
+//    {
+//        return 5000;
+//    }
+//}
+
+//public class PartTimeEmployee : Employee
+//{
+//    public override decimal CalculateSalary()
+//    {
+//        return 1500;
+//    }
+//}
 
 // School Mangement
 
@@ -65,3 +116,24 @@ public class StudentService : IStudentService
  * Teacher
  * Student
 */
+
+public interface IReport
+{
+    public void GenerateReport();
+}
+
+
+public class StudentReport : IReport
+{
+    public void GenerateReport() {
+        Console.WriteLine("Student Report Generated");
+    }
+}
+
+public class TeachrtReport : IReport
+{
+    public void GenerateReport()
+    {
+        Console.WriteLine("Teacher Report Generated");
+    }
+}
