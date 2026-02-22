@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerce.Controllers;
 
 [ApiController]
-[Route("students")]
+[Route("[controller]")]
 public class StudentsController : ControllerBase
 {
-
     private readonly IStudentService _studentService;
 
     public StudentsController(
@@ -18,15 +17,21 @@ public class StudentsController : ControllerBase
         _studentService = studentService;
     }
 
-    [HttpGet("GetAll")]
-    [Authorize]
+    [HttpGet]
     public IActionResult GetStudents()
     {
         var students = _studentService.GetStudents();
-        return BadRequest("the comiang model is wrong");
+        return Ok(students);
     }
 
     [HttpGet]
+    [Route("PrintStudentName")]
+    public IActionResult PrintStudentName(string name,int age)
+    {
+        return Ok("Hello " + name + " Age " + age);
+    }
+
+    [HttpGet("{id}")]
     public IActionResult Get(int id)
     {
         var student = _studentService.GetStudent(id);
@@ -34,10 +39,22 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Post(Student student)
+    [Route("AddStudent")]
+    public IActionResult Post([FromForm] StudentDto student)
     {
-        var studentId = _studentService.AddStudent(student);
+        Student entity = new Student {
+            Name = student.AdSoyad,
+            Age = student.Yas
+        };
+        var studentId = _studentService.AddStudent(entity);
         return Ok(studentId);
+    }
+
+    [HttpPut]
+    [Route("state")]
+    public IActionResult Put(bool state)
+    {
+        return Ok();
     }
 
     [HttpPut]
@@ -53,4 +70,10 @@ public class StudentsController : ControllerBase
         _studentService.DeleteStudent(id);
         return Ok();
     }
+}
+
+public class StudentDto
+{
+    public string AdSoyad { get; set; }
+    public int Yas { get; set; }
 }

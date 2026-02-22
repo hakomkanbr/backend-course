@@ -45,7 +45,7 @@ public interface IStudentService
 
 public class StudentService : IStudentService
 {
-    public static List<Student> _students { get; set; } = new();
+    public List<Student> _students { get; set; } = new();
 
     public int AddStudent(Student student)
     {

@@ -27,6 +27,7 @@ foreach (var report in reports)
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IStudentService,StudentService>();
+builder.Services.AddScoped<IStudentService,StudentService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
