@@ -20,6 +20,7 @@ public class StudentsController : ControllerBase
     [HttpGet]
     public IActionResult GetStudents()
     {
+
         var students = _studentService.GetStudents();
         return Ok(students);
     }
@@ -70,6 +71,14 @@ public class StudentsController : ControllerBase
         _studentService.DeleteStudent(id);
         return Ok();
     }
+
+    [HttpGet]
+    [Route("[Action]")]
+    public IActionResult TestThread(bool block)
+    {
+        return Ok("Blocked Action");
+    }
+
 }
 
 public class StudentDto

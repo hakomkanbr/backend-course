@@ -1,6 +1,6 @@
 using Microsoft.OpenApi;
-
 using ECommerce.Models;
+using ECommerce;
 
 
 
@@ -56,6 +56,24 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = string.Empty;
     });
 }
+
+
+/*
+    Http Request => A,B,C
+    Http Response => C,B,A
+
+    A (Before)
+        b (Before)
+            c (Before)
+    Controller
+    c (After)
+        b (After)
+            A (After)
+*/
+
+app.UseMiddleware<A>();
+//app.UseMiddleware<B>();
+//app.UseMiddleware<C>();
 
 app.UseHttpsRedirection();
 
