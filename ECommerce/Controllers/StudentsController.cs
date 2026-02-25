@@ -1,5 +1,4 @@
 ﻿using ECommerce.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.Controllers;
@@ -74,11 +73,11 @@ public class StudentsController : ControllerBase
 
     [HttpGet]
     [Route("[Action]")]
-    public IActionResult TestThread(bool block)
+    public async Task<IActionResult> TestThread(bool block)
     {
+        await Task.Delay(5000);
         return Ok("Blocked Action");
     }
-
 }
 
 public class StudentDto
