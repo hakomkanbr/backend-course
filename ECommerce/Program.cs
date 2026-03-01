@@ -1,33 +1,25 @@
 using Microsoft.OpenApi;
-using ECommerce.Models;
 using ECommerce;
+using Microsoft.EntityFrameworkCore;
 
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-//List<Employee> employees = new List<Employee>() { 
-//    new FullTimeEmployee(),
-//    new PartTimeEmployee(),
-//};
-
-List<IReport> reports = new List<IReport>() {
-    new StudentReport(),
-    new TeachrtReport()
-};
-
-foreach (var report in reports)
-{
-    report.GenerateReport();
-}
-
 // Add services to the container.
 
 builder.Services.AddControllers();
 
-builder.Services.AddSingleton<IStudentService,StudentService>();
-builder.Services.AddScoped<IStudentService,StudentService>();
+
+//builder.Services.AddScoped<AppDbContext>();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -57,6 +49,17 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+//var context = app.Services.GetRequiredService<AppDbContext>();
+
+
+//var fetchAllUsers = context.Users.ToList();
+
+//foreach (var user in fetchAllUsers)
+//{
+//    Console.WriteLine(user.Name);
+//}
+
+
 
 /*
     Http Request => A,B,C
@@ -71,7 +74,7 @@ if (app.Environment.IsDevelopment())
             A (After)
 */
 
-app.UseMiddleware<A>();
+//app.UseMiddleware<A>();
 //app.UseMiddleware<B>();
 //app.UseMiddleware<C>();
 

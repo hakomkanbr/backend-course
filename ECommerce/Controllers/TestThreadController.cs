@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Controllers;
 
@@ -6,6 +7,11 @@ namespace ECommerce.Controllers;
 [Route("[controller]")]
 public class TestThreadController : Controller
 {
+    public readonly AppDbContext _context;
+    public TestThreadController(AppDbContext context)
+    {
+        _context = context;
+    }
 
     [HttpGet("sync-wait")]
     public async Task<IActionResult> AsyncWait()
@@ -18,6 +24,16 @@ public class TestThreadController : Controller
         return Ok("Finished");
     }
 
+    [HttpGet("print-query")]
+    public IActionResult PrintQuery()
+    {
+       var usersQuery = _context.Users.AddAsync(new Tables.User()
+       {
+           Role
+       });
+        _context.SaveChanges();
+        return Ok();
+    }
 
     /**
      * Sync => Thread ينتظر ويحجز

@@ -1,87 +1,87 @@
-﻿using ECommerce.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿//using ECommerce.Models;
+//using Microsoft.AspNetCore.Mvc;
 
-namespace ECommerce.Controllers;
+//namespace ECommerce.Controllers;
 
-[ApiController]
-[Route("[controller]")]
-public class StudentsController : ControllerBase
-{
-    private readonly IStudentService _studentService;
+//[ApiController]
+//[Route("[controller]")]
+//public class StudentsController : ControllerBase
+//{
+//    private readonly IStudentService _studentService;
 
-    public StudentsController(
-        IStudentService studentService
-        )
-    {
-        _studentService = studentService;
-    }
+//    public StudentsController(
+//        IStudentService studentService
+//        )
+//    {
+//        _studentService = studentService;
+//    }
 
-    [HttpGet]
-    public IActionResult GetStudents()
-    {
+//    [HttpGet]
+//    public IActionResult GetStudents()
+//    {
 
-        var students = _studentService.GetStudents();
-        return Ok(students);
-    }
+//        var students = _studentService.GetStudents();
+//        return Ok(students);
+//    }
 
-    [HttpGet]
-    [Route("PrintStudentName")]
-    public IActionResult PrintStudentName(string name,int age)
-    {
-        return Ok("Hello " + name + " Age " + age);
-    }
+//    [HttpGet]
+//    [Route("PrintStudentName")]
+//    public IActionResult PrintStudentName(string name,int age)
+//    {
+//        return Ok("Hello " + name + " Age " + age);
+//    }
 
-    [HttpGet("{id}")]
-    public IActionResult Get(int id)
-    {
-        var student = _studentService.GetStudent(id);
-        return Ok(student);
-    }
+//    [HttpGet("{id}")]
+//    public IActionResult Get(int id)
+//    {
+//        var student = _studentService.GetStudent(id);
+//        return Ok(student);
+//    }
 
-    [HttpPost]
-    [Route("AddStudent")]
-    public IActionResult Post([FromForm] StudentDto student)
-    {
-        Student entity = new Student {
-            Name = student.AdSoyad,
-            Age = student.Yas
-        };
-        var studentId = _studentService.AddStudent(entity);
-        return Ok(studentId);
-    }
+//    [HttpPost]
+//    [Route("AddStudent")]
+//    public IActionResult Post([FromForm] StudentDto student)
+//    {
+//        Student entity = new Student {
+//            Name = student.AdSoyad,
+//            Age = student.Yas
+//        };
+//        var studentId = _studentService.AddStudent(entity);
+//        return Ok(studentId);
+//    }
 
-    [HttpPut]
-    [Route("state")]
-    public IActionResult Put(bool state)
-    {
-        return Ok();
-    }
+//    [HttpPut]
+//    [Route("state")]
+//    public IActionResult Put(bool state)
+//    {
+//        return Ok();
+//    }
 
-    [HttpPut]
-    public IActionResult Put(Student student)
-    {
-        var studentId = _studentService.UpdateStudent(student);
-        return Ok(studentId);
-    }
+//    [HttpPut]
+//    public IActionResult Put(Student student)
+//    {
+//        var studentId = _studentService.UpdateStudent(student);
+//        return Ok(studentId);
+//    }
 
-    [HttpDelete]
-    public IActionResult Delete(int id)
-    {
-        _studentService.DeleteStudent(id);
-        return Ok();
-    }
+//    [HttpDelete]
+//    public IActionResult Delete(int id)
+//    {
+//        _studentService.DeleteStudent(id);
+//        return Ok();
+//    }
 
-    [HttpGet]
-    [Route("[Action]")]
-    public async Task<IActionResult> TestThread(bool block)
-    {
-        await Task.Delay(5000);
-        return Ok("Blocked Action");
-    }
-}
+//    [HttpGet]
+//    [Route("[Action]")]
+//    public async Task<IActionResult> TestThread(bool block)
+//    {
+//        await Task.Delay(5000);
+//        return Ok("Blocked Action");
+//    }
+//}
 
-public class StudentDto
-{
-    public string AdSoyad { get; set; }
-    public int Yas { get; set; }
-}
+//public class StudentDto
+//{
+//    public string AdSoyad { get; set; }
+//    public int Yas { get; set; }
+//}
