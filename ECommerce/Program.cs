@@ -1,6 +1,8 @@
 using Microsoft.OpenApi;
 using ECommerce;
 using Microsoft.EntityFrameworkCore;
+using ECommerce.Tables.Products;
+using ECommerce.Tables.Identity;
 
 
 
@@ -79,6 +81,32 @@ if (app.Environment.IsDevelopment())
 //app.UseMiddleware<C>();
 
 app.UseHttpsRedirection();
+
+
+using var scope = app.Services.CreateScope();
+var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+//int roleId = context.Roles.Where(i => i.Name == "Manager").First().Id;
+
+//User user = new User() {
+//    UserName = "ahmed_user",
+//    Name =  "Ahmed",
+//    Password = "Test.123",
+//    Email = "ahmed@gmail.com",
+//    RoleId = roleId
+//    //Phone = "+53802545454"
+//};
+
+//context.Users.Add(user);
+
+//context.SaveChanges();
+
+var users = context.Users.Include(i => i.Role).ToList();
+
+foreach (var user in users)
+{
+    Console.WriteLine($"User Name {user.Name} Has Role {user.Role?.Name}");
+}
 
 app.UseAuthorization();
 

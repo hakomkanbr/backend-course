@@ -1,3 +1,0 @@
-﻿Remove-migration
-Add-migration
-Update-Database
