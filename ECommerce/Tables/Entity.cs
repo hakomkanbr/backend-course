@@ -1,4 +1,8 @@
-﻿namespace ECommerce.Tables;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ECommerce.Tables;
 
 public abstract class Entity
 {

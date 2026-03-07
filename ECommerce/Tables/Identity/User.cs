@@ -1,9 +1,12 @@
-﻿namespace ECommerce.Tables.Identity;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ECommerce.Tables.Identity;
 
 public class User : Entity, ILog
 {
     public string UserName { get; set; }
     public string Name { get; set; }
+
     public string Email { get; set; }
     public string? Phone { get; set; }
 
