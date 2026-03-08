@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace ECommerce.Tables.Identity;
+
 
 public class User : Entity, ILog
 {
@@ -12,7 +14,7 @@ public class User : Entity, ILog
 
     public string Password { get; set; }
 
-    public int RoleId { get; set; }
+    public int? RoleId { get; set; }
     public Role Role { get; set; }
 
     public ICollection<Order> Orders { get; set; }

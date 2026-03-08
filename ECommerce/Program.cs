@@ -86,27 +86,43 @@ app.UseHttpsRedirection();
 using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-//int roleId = context.Roles.Where(i => i.Name == "Manager").First().Id;
-
-//User user = new User() {
-//    UserName = "ahmed_user",
-//    Name =  "Ahmed",
-//    Password = "Test.123",
-//    Email = "ahmed@gmail.com",
-//    RoleId = roleId
-//    //Phone = "+53802545454"
+//Role manager = new Role()
+//{
+//        Name = "Manager",
 //};
 
-//context.Users.Add(user);
+//context.Roles.Add(manager);
 
 //context.SaveChanges();
 
-var users = context.Users.Include(i => i.Role).ToList();
+//Role role = context.Roles.Where(i => i.Name == "Manager").First();
 
-foreach (var user in users)
+//context.Roles.Remove(role);
+
+//context.SaveChanges();
+
+int roleId = context.Roles.Where(i => i.Name == "Manager").First().Id;
+
+User user = new User()
 {
-    Console.WriteLine($"User Name {user.Name} Has Role {user.Role?.Name}");
-}
+    UserName = "ahmed_user",
+    Name = "Ahmed",
+    Password = "Test.123",
+    Email = "ahmed2@gmail.com",
+    RoleId = roleId
+    //Phone = "+53802545454"
+};
+
+context.Users.Add(user);
+
+context.SaveChanges();
+
+//var users = context.Users.Include(i => i.Role).ToList();
+
+//foreach (var user in users)
+//{
+//    Console.WriteLine($"User Name {user.Name} Has Role {user.Role?.Name}");
+//}
 
 app.UseAuthorization();
 
