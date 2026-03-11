@@ -41,8 +41,40 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<User>().HasKey(i => i.Id);
 
+        //modelBuilder.Entity<User>().HasIndex(i => new {i.Email,i.UserName}).IsUnique(); // ahmed@gmail.com
 
-        //modelBuilder.Entity<User>().HasIndex(i => new { i.Email , i.UserName});
+        /*
+           Tracking 
+            
+            Efcore يتذكر :
+
+            Original Value
+
+            Current Value
+
+            - Using Tracking
+            Update
+            Delete
+            Modify
+
+            - No Tracking
+            Read Only Data
+            Reports
+            Lists
+
+        */
+
+        /*
+        Row 1 => email && username
+        Row 2 => ahmed@gmail.com 
+        Row 3 
+        Row 4 
+        Row 5 
+        Row 6
+        ...
+
+        B-Tree
+        */
 
         modelBuilder.Entity<User>()
             .Property(i => i.UserName)

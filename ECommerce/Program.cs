@@ -86,43 +86,42 @@ app.UseHttpsRedirection();
 using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-//Role manager = new Role()
-//{
-//        Name = "Manager",
-//};
 
-//context.Roles.Add(manager);
+/**/
+
+
+
+
+//int roleId = context.Roles.Where(i => i.Name == "Manager").First().Id;
+
+//var user = context.Users.AsNoTracking().FirstOrDefault(); // 20,000 user
+
+//user.Name = "Hamza";
 
 //context.SaveChanges();
 
-//Role role = context.Roles.Where(i => i.Name == "Manager").First();
-
-//context.Roles.Remove(role);
+///*
+//    UPDATE Users SET NAME = 'Ahmed' WHERE Id=1
+//*/
 
 //context.SaveChanges();
 
-int roleId = context.Roles.Where(i => i.Name == "Manager").First().Id;
 
-User user = new User()
-{
-    UserName = "ahmed_user",
-    Name = "Ahmed",
-    Password = "Test.123",
-    Email = "ahmed2@gmail.com",
-    RoleId = roleId
-    //Phone = "+53802545454"
-};
 
-context.Users.Add(user);
-
-context.SaveChanges();
-
-//var users = context.Users.Include(i => i.Role).ToList();
-
-//foreach (var user in users)
+//for (int i = 0; i < 20000; i++)
 //{
-//    Console.WriteLine($"User Name {user.Name} Has Role {user.Role?.Name}");
+//    context.Users.Add(new User()
+//    {
+//        UserName = "ahmed_user " + i,
+//        Name = "Ahmed",
+//        Password = "Test.123",
+//        Email = $"ahmed{i}@gmail.com",
+//        RoleId = roleId
+//        //Phone = "+53802545454"
+//    });
 //}
+
+
 
 app.UseAuthorization();
 
