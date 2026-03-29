@@ -3,6 +3,7 @@ using ECommerce;
 using Microsoft.EntityFrameworkCore;
 using ECommerce.Tables.Products;
 using ECommerce.Tables.Identity;
+using ECommerce.Tables;
 
 
 
@@ -51,77 +52,34 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-//var context = app.Services.GetRequiredService<AppDbContext>();
-
-
-//var fetchAllUsers = context.Users.ToList();
-
-//foreach (var user in fetchAllUsers)
-//{
-//    Console.WriteLine(user.Name);
-//}
-
-
-
-/*
-    Http Request => A,B,C
-    Http Response => C,B,A
-
-    A (Before)
-        b (Before)
-            c (Before)
-    Controller
-    c (After)
-        b (After)
-            A (After)
-*/
-
-//app.UseMiddleware<A>();
-//app.UseMiddleware<B>();
-//app.UseMiddleware<C>();
-
 app.UseHttpsRedirection();
-
 
 using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
+//List<Order> orders = context.Orders.ToList(); // Lazy Loaging
 
-/**/
-
-
-
-
-//int roleId = context.Roles.Where(i => i.Name == "Manager").First().Id;
-
-//var user = context.Users.AsNoTracking().FirstOrDefault(); // 20,000 user
-
-//user.Name = "Hamza";
-
-//context.SaveChanges();
-
-///*
-//    UPDATE Users SET NAME = 'Ahmed' WHERE Id=1
-//*/
-
-//context.SaveChanges();
-
-
-
-//for (int i = 0; i < 20000; i++)
+//foreach (var order in orders)
 //{
-//    context.Users.Add(new User()
-//    {
-//        UserName = "ahmed_user " + i,
-//        Name = "Ahmed",
-//        Password = "Test.123",
-//        Email = $"ahmed{i}@gmail.com",
-//        RoleId = roleId
-//        //Phone = "+53802545454"
-//    });
+//    var items = order.OrderItems;
 //}
 
+//var order = context.Orders.Include(i => i.OrderItems).First(); // Eager Loaging
 
+/*
+    - Eager Loading
+    Select * From Orders JOIN OrderItems On Orders.Id = OrderItems.OrderId;
+
+    // Take Orders + OrderItems with same request
+ */
+
+/*
+    - Separeate Query = Quary منفصل 
+    - Full Control = تحكم كامل
+    - أفضل من طريقة Lazy Loading
+*/
+
+var order = context.Orders.First(); 
 
 app.UseAuthorization();
 

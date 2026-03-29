@@ -170,6 +170,14 @@ public class AppDbContext : DbContext
         لا يمكن حذف القسم لان هناك منتجات مرتبطة بها
         */
 
+        /*
+         * Loading Data in Efcore
+         * 
+         * - Eager Loading => التحميل المسبق => 
+         * - Lazy Loading => التحميل الكسول
+         * - Explict Loading => التحميل المتشوق
+         */
+
 
 
         base.OnModelCreating(modelBuilder);
