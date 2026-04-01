@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ECommerce.Tables.Products;
 using ECommerce.Tables.Identity;
 using ECommerce.Tables;
-using ECommerce.Repostories.Users;
+using ECommerce.Repostories;
 
 
 
@@ -21,9 +21,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-
-
-//builder.Services.AddScoped<IUserRepostory,UserRepostory>();
 
 
 
