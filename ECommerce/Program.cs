@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ECommerce.Tables.Products;
 using ECommerce.Tables.Identity;
 using ECommerce.Tables;
+using ECommerce.Repostories;
 
 
 
@@ -21,9 +22,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-
-
-
+builder.Services.AddScoped<IGenericRepostory<Product>,GenericRepostory<Product>>(); // Save State For Per Request
+// _______________
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
