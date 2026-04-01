@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace ECommerce.Tables.Identity;
+namespace ECommerce.Enitites.Identity;
 
 
 public class User : Entity, ILog

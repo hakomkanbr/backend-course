@@ -1,4 +1,4 @@
-﻿namespace ECommerce.Tables.Identity;
+﻿namespace ECommerce.Enitites.Identity;
 
 public class Role : Entity
 {

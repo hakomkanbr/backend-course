@@ -1,10 +1,10 @@
-﻿using ECommerce.Tables.Identity;
+﻿using ECommerce.Enitites.Identity;
 
 namespace ECommerce.Repostories.Users;
 
 public interface IUserRepostory
 {
     List<User> GetAll(User user);
-    User GetById(User user);
+    User GetById(int id);
     void Add(User user);
 }

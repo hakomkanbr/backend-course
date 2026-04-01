@@ -1,10 +1,12 @@
 using Microsoft.OpenApi;
 using ECommerce;
 using Microsoft.EntityFrameworkCore;
-using ECommerce.Tables.Products;
-using ECommerce.Tables.Identity;
-using ECommerce.Tables;
+using ECommerce.Enitites.Products;
+using ECommerce.Enitites.Identity;
+using ECommerce.Enitites;
 using ECommerce.Repostories;
+using ECommerce.Repostories.Users;
+using ECommerce.Business.Users;
 
 
 
@@ -22,8 +24,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+/*
+ Scoped => موظف لكل زبون 
+ Singleton => مدير واحد الشركة
+*/
 
 
+builder.Services.AddScoped<IUserRepostory, UserRepostory>();
+builder.Services.AddScoped<UserService>();
+
+//builder.Services.AddSingleton<IUserService, ApiUserService>();
+
+//builder.Services.AddScoped<IUserService,SqlUserService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

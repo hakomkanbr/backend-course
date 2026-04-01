@@ -1,4 +1,4 @@
-﻿namespace ECommerce.Tables.Products;
+﻿namespace ECommerce.Enitites.Products;
 
 /**
  * Product Has One Category

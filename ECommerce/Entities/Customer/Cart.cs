@@ -1,4 +1,4 @@
-﻿namespace ECommerce.Tables.Customer;
+﻿namespace ECommerce.Enitites.Customer;
 
 public class Cart : Entity
 {

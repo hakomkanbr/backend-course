@@ -1,6 +1,6 @@
-﻿using ECommerce.Tables.Products;
+﻿using ECommerce.Enitites.Products;
 
-namespace ECommerce.Tables;
+namespace ECommerce.Enitites;
 
 public class OrderItems : Entity
 {

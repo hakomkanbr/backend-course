@@ -1,4 +1,4 @@
-﻿using ECommerce.Tables.Identity;
+﻿using ECommerce.Enitites.Identity;
 
 namespace ECommerce.Repostories.Users;
 
@@ -22,8 +22,8 @@ public class UserRepostory : IUserRepostory
         return users;
     }
 
-    public User GetById(User user)
+    public User GetById(int id)
     {
-        throw new NotImplementedException();
+        return _context.Users.FirstOrDefault(i => i.Id == id);
     }
 }

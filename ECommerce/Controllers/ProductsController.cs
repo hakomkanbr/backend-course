@@ -1,5 +1,5 @@
 ﻿using ECommerce.Repostories;
-using ECommerce.Tables.Products;
+using ECommerce.Enitites.Products;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

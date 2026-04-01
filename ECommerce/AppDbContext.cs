@@ -1,7 +1,7 @@
-﻿using ECommerce.Tables;
-using ECommerce.Tables.Customer;
-using ECommerce.Tables.Identity;
-using ECommerce.Tables.Products;
+﻿using ECommerce.Enitites;
+using ECommerce.Enitites.Customer;
+using ECommerce.Enitites.Identity;
+using ECommerce.Enitites.Products;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce;

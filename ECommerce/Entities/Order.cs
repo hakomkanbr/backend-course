@@ -1,6 +1,6 @@
-﻿using ECommerce.Tables.Identity;
+﻿using ECommerce.Enitites.Identity;
 
-namespace ECommerce.Tables;
+namespace ECommerce.Enitites;
 
 public class Order : Entity, ILog
 {

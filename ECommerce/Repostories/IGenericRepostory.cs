@@ -1,5 +1,5 @@
-﻿using ECommerce.Tables;
-using ECommerce.Tables.Products;
+﻿using ECommerce.Enitites;
+using ECommerce.Enitites.Products;
 
 namespace ECommerce.Repostories;
 
