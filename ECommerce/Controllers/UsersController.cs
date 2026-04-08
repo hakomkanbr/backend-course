@@ -1,15 +1,14 @@
-﻿using ECommerce.Business.Users;
-using ECommerce.Repostories.Users;
-using ECommerce.Enitites.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using ECommerce.Business.Users.Dto;
+using ECommerce.Business.Users.Services;
 
 namespace ECommerce.Controllers;
 
+// FluentValidation
 
 [ApiController]
 [Route("[controller]")]
-public class UsersController(UserService _userService) : Controller
+public class UsersController(IUserService _userService) : Controller
 {
 
     [HttpGet("{id}")]
@@ -18,39 +17,16 @@ public class UsersController(UserService _userService) : Controller
         return Ok(_userService.GetById(id));
     }
 
-    [HttpGet("[Action]")]
-    public async Task<IActionResult> plus()
+
+    // 
+    [HttpPost]
+    public async Task<IActionResult> Create(CreateUserDto userdto)
     {
-        _userService.Plus();
+        if (userdto.Name.Length < 3) return StatusCode(400, "Name should be > 3");
+
+        _userService.Create(userdto);
         return Ok();
     }
-
-    [HttpGet("[Action]")]
-    public async Task<IActionResult> Minus()
-    {
-        _userService.Minus();
-        return Ok();
-    }
-
-    [HttpGet("[Action]")]
-    public async Task<IActionResult> Print()
-    {
-        return Ok(_userService.Print());
-    }
-
-    //[HttpGet()]
-    //public async Task<IActionResult> GetUsers()
-    //{
-    //    return Ok(await GetUsersAsync());
-    //}
-
-    //[HttpGet()]
-    //public async Task<IActionResult> GetUsersList()
-    //{
-    //    return Ok(await GetUsersAsync());
-    //}
-
-
 
     //private async Task<List<User>> GetUsersAsync()
     //{

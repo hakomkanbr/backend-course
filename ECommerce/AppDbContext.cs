@@ -28,18 +28,18 @@ public class AppDbContext : DbContext
     {
 
         // Roles
-        modelBuilder.Entity<Role>().ToTable("Roles");
-        modelBuilder.Entity<Role>().HasData(
-            new Role() { Id = 1, Name = "Admin"},
-            new Role() { Id = 2, Name = "Manager"},
-            new Role() { Id = 3, Name = "Customer"}
-        );
+        //modelBuilder.Entity<Role>().ToTable("Roles");
+        //modelBuilder.Entity<Role>().HasData(
+        //    new Role() { Id = 1, Name = "Admin"},
+        //    new Role() { Id = 2, Name = "Manager"},
+        //    new Role() { Id = 3, Name = "Customer"}
+        //);
 
 
-        // Users
-        modelBuilder.Entity<User>().ToTable("Users");
+        //// Users
+        //modelBuilder.Entity<User>().ToTable("Users");
 
-        modelBuilder.Entity<User>().HasKey(i => i.Id);
+        //modelBuilder.Entity<User>().HasKey(i => i.Id);
 
         //modelBuilder.Entity<User>().HasIndex(i => new {i.Email,i.UserName}).IsUnique(); // ahmed@gmail.com
 
@@ -76,22 +76,22 @@ public class AppDbContext : DbContext
         B-Tree
         */
 
-        modelBuilder.Entity<User>()
-            .Property(i => i.UserName)
-            .IsRequired()
-            .HasMaxLength(100);
+        //modelBuilder.Entity<User>()
+        //    .Property(i => i.UserName)
+        //    .IsRequired()
+        //    .HasMaxLength(100);
 
-        modelBuilder.Entity<User>()
-             .Property(i => i.Email)
-             .IsRequired()
-             .HasMaxLength(200);
+        //modelBuilder.Entity<User>()
+        //     .Property(i => i.Email)
+        //     .IsRequired()
+        //     .HasMaxLength(200);
 
 
-        modelBuilder.Entity<User>()
-            .HasOne(i => i.Role)
-            .WithMany(i => i.Users)
-            .HasForeignKey(i => i.RoleId)
-            .OnDelete(DeleteBehavior.NoAction);
+        //modelBuilder.Entity<User>()
+        //    .HasOne(i => i.Role)
+        //    .WithMany(i => i.Users)
+        //    .HasForeignKey(i => i.RoleId)
+        //    .OnDelete(DeleteBehavior.NoAction);
 
         //modelBuilder.Entity<Product>().ToTable("ProductTable");
 

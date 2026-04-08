@@ -1,4 +1,5 @@
 ﻿using ECommerce.Enitites.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Repostories.Users;
 
@@ -24,6 +25,6 @@ public class UserRepostory : IUserRepostory
 
     public User GetById(int id)
     {
-        return _context.Users.FirstOrDefault(i => i.Id == id);
+        return _context.Users.Include(i => i.Role).FirstOrDefault(i => i.Id == id);
     }
 }

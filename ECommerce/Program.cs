@@ -6,7 +6,7 @@ using ECommerce.Enitites.Identity;
 using ECommerce.Enitites;
 using ECommerce.Repostories;
 using ECommerce.Repostories.Users;
-using ECommerce.Business.Users;
+using ECommerce.Business.Users.Services;
 
 
 
@@ -31,9 +31,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddScoped<IUserRepostory, UserRepostory>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IUserService,UserService>();
 
-//builder.Services.AddSingleton<IUserService, ApiUserService>();
+
+//builder.Services.AddScoped<IMyService, MyService>();
+
+//builder.Services.AddSingleton<IMyService, MyService>();
 
 //builder.Services.AddScoped<IUserService,SqlUserService>();
 
@@ -92,7 +95,7 @@ var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     - أفضل من طريقة Lazy Loading
 */
 
-var order = context.Orders.First(); 
+//var order = context.Orders.First(); 
 
 app.UseAuthorization();
 
