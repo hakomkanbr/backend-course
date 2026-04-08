@@ -7,6 +7,8 @@ using ECommerce.Enitites;
 using ECommerce.Repostories;
 using ECommerce.Repostories.Users;
 using ECommerce.Business.Users.Services;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 
@@ -28,6 +30,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
  Scoped => موظف لكل زبون 
  Singleton => مدير واحد الشركة
 */
+
+builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer",options =>
+{
+    options.TokenValidationParameters = new()
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secret"))
+    };
+});
 
 
 builder.Services.AddScoped<IUserRepostory, UserRepostory>();
@@ -97,6 +110,7 @@ var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
 //var order = context.Orders.First(); 
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
