@@ -1,68 +1,44 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using ECommerce.Business.Users.Dto;
 using ECommerce.Business.Users.Services;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ECommerce.Controllers;
 
-// FluentValidation
-
 [ApiController]
 [Route("[controller]")]
-public class UsersController(IUserService _userService) : Controller
+
+public class UsersController : ControllerBase  
 {
+    private readonly IUserService _userService;
 
-    #region Account
-    [HttpPost("[Action]")]
-    public IActionResult Login(LoginDto dto)
+    public UsersController(IUserService userService)
     {
-        if(dto.Email == "admin@test.com" && dto.Password == "Admin.123")
-        {
-            // User Has Access To System
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name,dto.Email),
-                new Claim(ClaimTypes.Role, "Admin"),
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ghsduifghdfiuoghdfuighduighduijgiorjierhsguiohioawefjgviopgkiorwjgoiwergsjosijggaewrgegkwapogkeprohjeroptgjwropigjeriohgjerosihjestkogmbdfsk"));
-
-            var token = new JwtSecurityToken(
-                claims : claims,
-                expires : DateTime.Now.AddHours(1),
-                signingCredentials : new SigningCredentials(key,SecurityAlgorithms.HmacSha256)
-            );
-
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return Ok(tokenString);
-        }
-        else
-        {
-            return StatusCode(400 , "User Email And Password Is Wrong");
-        }
-    }
-    #endregion
-
-    #region Users
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetUserById(int id)
-    {
-        return Ok(_userService.GetById(id));
+        _userService = userService;
     }
 
-    [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> Create(CreateUserDto userdto)
+    [HttpGet]
+    [Authorize(Policy = "CanManagerUser")] // Claim Based
+    public async Task<IActionResult> GetAll()
     {
-        if (userdto.Name.Length < 3) return StatusCode(400, "Name should be > 3");
-
-        _userService.Create(userdto);
+        //var users = await _userService.GetAll();
         return Ok();
     }
-    #endregion User
+
+
+    [HttpPost]
+    [Authorize(Policy = "CanCreateUser")] // Claim Based
+
+    public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
+    {
+        //if (!ModelState.IsValid)
+        //    return BadRequest(ModelState);
+
+        //await _userService.Create(dto);
+
+        //if (!result)
+        //    return BadRequest(new { message = "فشل إنشاء المستخدم" });
+
+        return Ok(new { message = "تم إنشاء المستخدم بنجاح" });
+    }
 }

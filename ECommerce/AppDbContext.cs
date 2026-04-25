@@ -2,6 +2,7 @@
 using ECommerce.Enitites.Customer;
 using ECommerce.Enitites.Identity;
 using ECommerce.Enitites.Products;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce;
@@ -11,18 +12,31 @@ namespace ECommerce;
  2.Fluent Api
 */
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<User,Role,int>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
 
+    #region Users
     public DbSet<User> Users { get; set; }
-    public DbSet<Cart> Carts { get; set; }
-    public DbSet<OrderItems> OrderItems { get; set; }
-    public DbSet<Product> Products { get; set; }
-    public DbSet<CartItems> CartItems { get; set; }
     public DbSet<Role> Roles { get; set; }
+    #endregion
+
+    #region Products
+    public DbSet<Product> Products { get; set; }
+    #endregion
+
+    #region Orders
+    public DbSet<OrderItems> OrderItems { get; set; }
     public DbSet<Order> Orders { get; set; }
+    #endregion
+
+    #region Carts
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<CartItems> CartItems { get; set; }
+    #endregion
+
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

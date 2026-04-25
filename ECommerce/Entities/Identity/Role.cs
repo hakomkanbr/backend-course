@@ -1,8 +1,7 @@
-﻿namespace ECommerce.Enitites.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class Role : Entity
+namespace ECommerce.Enitites.Identity;
+
+public class Role : IdentityRole<int>
 {
-    public string Name { get; set; }
-
-    public ICollection<User> Users { get; set; }
 }

@@ -12,10 +12,9 @@ public class UserService(IUserRepostory _userRepo) : IUserService
         {
             CreatedAt = DateTime.Now,
             Email = userDto.Email,
-            Name = userDto.Name,
-            Password = userDto.Password,
-            Phone = userDto.Phone,
-            RoleId = userDto.RoleId,
+            FullName = userDto.Name,
+            PasswordHash = userDto.Password,
+            PhoneNumber = userDto.Phone,
             UserName = userDto.UserName,
         };
 
@@ -29,10 +28,10 @@ public class UserService(IUserRepostory _userRepo) : IUserService
 
         GetUserDto userDto = new GetUserDto
         {
-            Name = entity.Name,
+            Name = entity.FullName,
             Email = entity.Email,
-            RoleName = entity.Role?.Name,
-            Phone = entity.Phone,
+            //RoleName = entity.Role?.Name,
+            Phone = entity.PhoneNumber,
             UserName = entity.UserName
         };
 

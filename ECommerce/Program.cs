@@ -1,76 +1,150 @@
-using Microsoft.OpenApi;
-using ECommerce;
+using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
-using ECommerce.Enitites.Products;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using ECommerce;
 using ECommerce.Enitites.Identity;
-using ECommerce.Enitites;
 using ECommerce.Repostories;
 using ECommerce.Repostories.Users;
 using ECommerce.Business.Users.Services;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ==================== SERVICES ====================
 
 builder.Services.AddControllers();
 
-
-//builder.Services.AddScoped<AppDbContext>();
-
+// Database
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-/*
- Scoped => موظف لكل زبون 
- Singleton => مدير واحد الشركة
-*/
-
-builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer",options =>
+// Identity
+builder.Services.AddIdentity<User, Role>(options =>
 {
-    options.TokenValidationParameters = new()
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+})
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();
+
+// JWT Authentication
+var jwtKey = "hjbgsdhgdifghldfjggsadgsdjgbarueigbrugibsguinbesguiarehgkgjsdghaiurghersijgheriseshtrhthjbgsdhgdifghldfjggsadgsdjgbarueigbrugibsguinbesguiarehgkgjsdghaiurghersijgheriseshtrht";
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secret"))
+        ClockSkew = TimeSpan.Zero
     };
 });
 
+/*
+    1- Role-Based (RBAC) => المستخدم يتنمي الى دور 
+    مثال : Admin , Teacher , Student
+    ______________
+    2-Claim-Based => بدل من دور ممكن ان نعطي المستخدم خصائص (Claims) 
+    permission = "branchs.view"; CLAİM
+    permission = "branchs.create"; CLAİM
+    permission = "student.create";
+    permission = "student.edit";
+    permission = "student.delete";
+    permission = "branchs.assignUserToBranch";
+    _________________    
+    3 -  Policy-Based => نجمع عدة شروط مع بعض
+    مثال : 
+    - User Should have "Admin" Role; 
+    - User Should have "Student.Create" Permission; 
+    - User Should have Depencies to "Tenant A"; 
 
+    4 - ABAC
+*/
+
+builder.Services.AddAuthorization(options =>
+{
+    // Claim Based
+    options.AddPolicy("CanCreateUser", policy =>
+    {
+        policy.RequireClaim("permission", "student.create");
+    });
+
+    // Policy Based
+    options.AddPolicy("CanCreateUser", policy =>
+    {
+        policy.RequireClaim("permission", "student.create");
+        policy.RequireClaim("permission", "student.edit");
+        policy.RequireClaim("permission", "student.delete");
+    });
+
+    // Claim Based
+    options.AddPolicy("CanCreateBranch", policy =>
+    {
+        policy.RequireClaim("permission", "branchs.create");
+    });
+
+    // Policy Based
+    options.AddPolicy("CanManagerUser", policy =>
+    {
+        policy.RequireRole("Teacher");
+        policy.RequireClaim("permission", "student.view");
+    });
+});
+
+// Repositories & Services
 builder.Services.AddScoped<IUserRepostory, UserRepostory>();
-builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
-
-//builder.Services.AddScoped<IMyService, MyService>();
-
-//builder.Services.AddSingleton<IMyService, MyService>();
-
-//builder.Services.AddScoped<IUserService,SqlUserService>();
-
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "ECommerce API", Version = "v1" });
+
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "Please enter a valid token",
+        Description = "ادخل التوكن بدون كلمة Bearer",
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
         Scheme = "Bearer"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
     });
 });
 
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -83,36 +157,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-using var scope = app.Services.CreateScope();
-var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-//List<Order> orders = context.Orders.ToList(); // Lazy Loaging
-
-//foreach (var order in orders)
-//{
-//    var items = order.OrderItems;
-//}
-
-//var order = context.Orders.Include(i => i.OrderItems).First(); // Eager Loaging
-
-/*
-    - Eager Loading
-    Select * From Orders JOIN OrderItems On Orders.Id = OrderItems.OrderId;
-
-    // Take Orders + OrderItems with same request
- */
-
-/*
-    - Separeate Query = Quary منفصل 
-    - Full Control = تحكم كامل
-    - أفضل من طريقة Lazy Loading
-*/
-
-//var order = context.Orders.First(); 
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+}
 
 app.Run();
