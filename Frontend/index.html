@@ -146,7 +146,11 @@
       <div id="userInfo"></div>
 
       <h3>Role Based</h3>
-      <div id="adminPanel" class="box admin hidden">👑 Admin Only</div>
+      <button type="button" onclick="TestClaim()">TestClaim</button>
+      <div id="adminPanel" class="box admin hidden">
+        👑 Admin Only
+        <button type="button" onclick="TestClaim()">create user</button>
+      </div>
       <div id="userPanel" class="box user hidden">👤 User Area</div>
 
       <h3>Claims</h3>
@@ -155,8 +159,10 @@
     </div>
 
     <script>
-      const LOGIN_API = "https://localhost:5001/api/auth/login";
-      const REGISTER_API = "https://localhost:5001/api/auth/register";
+      const LOGIN_API = "http://localhost:5238/Account/Login";
+      const CREATE_USER = "http://localhost:5238/Users";
+      const TestClaimUrl = "http://localhost:5238/Users/TestClaim";
+      const REGISTER_API = "http://localhost:5238/Account/Register";
 
       // ================= UI =================
       function showRegister() {
@@ -169,6 +175,54 @@
         document.getElementById("loginCard").classList.remove("hidden");
       }
 
+      async function createUser() {
+        const res = await fetch(CREATE_USER, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            userName: "stri222ng",
+            name: "string",
+            email: "user222@example.com",
+            phone: "string",
+            password: "string",
+            roleId: 2,
+          }),
+        });
+
+        if (res.status >= 400) {
+          alert(res.status);
+          return;
+        }
+        alert("user created");
+      }
+
+      async function TestClaim() {
+        const res = await fetch(TestClaimUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            userName: "stri222ng",
+            name: "string",
+            email: "user222@example.com",
+            phone: "string",
+            password: "string",
+            roleId: 2,
+          }),
+        });
+
+        if (res.status >= 400) {
+          alert(res.status);
+          return;
+        }
+        alert("suucess");
+      }
+
       // ================= AUTH =================
       async function login() {
         const username = loginUsername.value;
@@ -177,12 +231,18 @@
         const res = await fetch(LOGIN_API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({ email: username, password }),
         });
+
+        if (res.status >= 400) {
+          alert("username or password is incorrect");
+
+          return;
+        }
 
         const data = await res.json();
 
-        localStorage.setItem("token", data.accessToken);
+        localStorage.setItem("token", data.token);
         init();
       }
 
@@ -221,12 +281,19 @@
 
         const user = parseJwt(token);
 
-        document.getElementById("userInfo").innerHTML = `
-        <b>${user.unique_name}</b><br>
-        Roles: ${user.role}
-    `;
+        console.info("user => ", user);
 
-        const roles = [].concat(user.role || []);
+        var username =
+          user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+        var role =
+          user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+
+        document.getElementById("userInfo").innerHTML = `
+        <b>${username}</b><br>
+        Roles: ${role}
+        `;
+
+        const roles = [].concat(role || []);
         const claims = user.permissions || [];
 
         // ROLE

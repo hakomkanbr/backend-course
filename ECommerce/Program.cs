@@ -62,7 +62,7 @@ builder.Services.AddAuthentication(options =>
     2-Claim-Based => بدل من دور ممكن ان نعطي المستخدم خصائص (Claims) 
     permission = "branchs.view"; CLAİM
     permission = "branchs.create"; CLAİM
-    permission = "student.create";
+    permission = "student.update";
     permission = "student.edit";
     permission = "student.delete";
     permission = "branchs.assignUserToBranch";
@@ -78,32 +78,43 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    // Claim Based
-    options.AddPolicy("CanCreateUser", policy =>
+    options.AddPolicy("AdminOnly", policy =>
     {
-        policy.RequireClaim("permission", "student.create");
+      policy.RequireRole("Admin");
     });
 
-    // Policy Based
-    options.AddPolicy("CanCreateUser", policy =>
+    options.AddPolicy("UserSupport", policy =>
     {
-        policy.RequireClaim("permission", "student.create");
-        policy.RequireClaim("permission", "student.edit");
-        policy.RequireClaim("permission", "student.delete");
+        policy.RequireClaim("Permission", "CanEditUser");
     });
 
-    // Claim Based
-    options.AddPolicy("CanCreateBranch", policy =>
-    {
-        policy.RequireClaim("permission", "branchs.create");
-    });
 
-    // Policy Based
-    options.AddPolicy("CanManagerUser", policy =>
-    {
-        policy.RequireRole("Teacher");
-        policy.RequireClaim("permission", "student.view");
-    });
+    //// Claim Based
+    //options.AddPolicy("CanCreateUser", policy =>
+    //{
+    //    policy.RequireClaim("permission", "student.create");
+    //});
+
+    //// Policy Based
+    //options.AddPolicy("CanCreateUser", policy =>
+    //{
+    //    policy.RequireClaim("permission", "student.create");
+    //    policy.RequireClaim("permission", "student.edit");
+    //    policy.RequireClaim("permission", "student.delete");
+    //});
+
+    //// Claim Based
+    //options.AddPolicy("CanCreateBranch", policy =>
+    //{
+    //    policy.RequireClaim("permission", "branchs.create");
+    //});
+
+    //// Policy Based
+    //options.AddPolicy("CanManagerUser", policy =>
+    //{
+    //    policy.RequireRole("Teacher");
+    //    policy.RequireClaim("permission", "student.view");
+    //});
 });
 
 // Repositories & Services
@@ -142,6 +153,17 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Allow", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 
 var app = builder.Build();
 
@@ -155,7 +177,11 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseCors("Allow");
+
+
 app.UseHttpsRedirection();
+
 
 app.UseAuthentication();
 app.UseAuthorization();

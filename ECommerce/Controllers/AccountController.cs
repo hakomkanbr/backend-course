@@ -76,7 +76,8 @@ public class AccountController : ControllerBase
         {
             new Claim(ClaimTypes.Name, user.UserName!),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email!)
+            new Claim(ClaimTypes.Email, user.Email!),
+            new Claim("Permission","CanEditUser")
         };
 
         foreach (var role in roles)

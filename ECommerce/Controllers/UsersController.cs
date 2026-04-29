@@ -25,9 +25,25 @@ public class UsersController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("[Action]")]
+    [Authorize(Policy = "UserSupport")] // Claim Based
+
+    public async Task<IActionResult> TestClaim([FromBody] CreateUserDto dto)
+    {
+        //if (!ModelState.IsValid)
+        //    return BadRequest(ModelState);
+
+        //await _userService.Create(dto);
+
+        //if (!result)
+        //    return BadRequest(new { message = "فشل إنشاء المستخدم" });
+
+        return Ok(new { message = "تم إنشاء المستخدم بنجاح" });
+    }
+
 
     [HttpPost]
-    [Authorize(Policy = "CanCreateUser")] // Claim Based
+    [Authorize(Roles = "User")] // Claim Based
 
     public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
     {
