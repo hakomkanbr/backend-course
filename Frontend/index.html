@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auth Demo</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        font-family: "Inter", sans-serif;
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 420px;
+      }
+
+      .card {
+        backdrop-filter: blur(20px);
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      h2 {
+        margin-bottom: 20px;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        margin-bottom: 12px;
+        outline: none;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        background: #fff;
+        color: #333;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .switch {
+        text-align: center;
+        margin-top: 10px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .dashboard {
+        width: 90%;
+        max-width: 900px;
+        color: white;
+      }
+
+      .box {
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+      }
+
+      .admin {
+        background: rgba(255, 0, 0, 0.2);
+      }
+      .user {
+        background: rgba(0, 0, 255, 0.2);
+      }
+      .claim {
+        background: rgba(0, 255, 0, 0.2);
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .logout {
+        cursor: pointer;
+        padding: 8px 12px;
+        background: #ff6b6b;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- LOGIN -->
+      <div id="loginCard" class="card">
+        <h2>Login</h2>
+        <input id="loginUsername" placeholder="Username" />
+        <input id="loginPassword" type="password" placeholder="Password" />
+        <button onclick="login()">Login</button>
+        <div class="switch" onclick="showRegister()">
+          Don't have an account? Register
+        </div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="registerCard" class="card hidden">
+        <h2>Register</h2>
+        <input id="regUsername" placeholder="Username" />
+        <input id="regPassword" type="password" placeholder="Password" />
+        <button onclick="register()">Register</button>
+        <div class="switch" onclick="showLogin()">
+          Already have an account? Login
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="dashboard hidden">
+      <div class="topbar">
+        <h2>Dashboard</h2>
+        <div class="logout" onclick="logout()">Logout</div>
+      </div>
+
+      <div id="userInfo"></div>
+
+      <h3>Role Based</h3>
+      <div id="adminPanel" class="box admin hidden">👑 Admin Only</div>
+      <div id="userPanel" class="box user hidden">👤 User Area</div>
+
+      <h3>Claims</h3>
+      <div id="canEdit" class="box claim hidden">✏️ Can Edit</div>
+      <div id="canDelete" class="box claim hidden">🗑️ Can Delete</div>
+    </div>
+
+    <script>
+      const LOGIN_API = "https://localhost:5001/api/auth/login";
+      const REGISTER_API = "https://localhost:5001/api/auth/register";
+
+      // ================= UI =================
+      function showRegister() {
+        document.getElementById("loginCard").classList.add("hidden");
+        document.getElementById("registerCard").classList.remove("hidden");
+      }
+
+      function showLogin() {
+        document.getElementById("registerCard").classList.add("hidden");
+        document.getElementById("loginCard").classList.remove("hidden");
+      }
+
+      // ================= AUTH =================
+      async function login() {
+        const username = loginUsername.value;
+        const password = loginPassword.value;
+
+        const res = await fetch(LOGIN_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+
+        localStorage.setItem("token", data.accessToken);
+        init();
+      }
+
+      async function register() {
+        const username = regUsername.value;
+        const password = regPassword.value;
+
+        await fetch(REGISTER_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        alert("Registered! Now login.");
+        showLogin();
+      }
+
+      function logout() {
+        localStorage.removeItem("token");
+        location.reload();
+      }
+
+      // ================= JWT =================
+      function parseJwt(token) {
+        return JSON.parse(atob(token.split(".")[1]));
+      }
+
+      // ================= INIT =================
+      function init() {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        document.querySelector(".container").classList.add("hidden");
+        document.getElementById("dashboard").classList.remove("hidden");
+
+        const user = parseJwt(token);
+
+        document.getElementById("userInfo").innerHTML = `
+        <b>${user.unique_name}</b><br>
+        Roles: ${user.role}
+    `;
+
+        const roles = [].concat(user.role || []);
+        const claims = user.permissions || [];
+
+        // ROLE
+        if (roles.includes("Admin")) {
+          adminPanel.classList.remove("hidden");
+        }
+
+        if (roles.includes("User") || roles.includes("Admin")) {
+          userPanel.classList.remove("hidden");
+        }
+
+        // CLAIM
+        if (claims.includes("CanEdit")) {
+          canEdit.classList.remove("hidden");
+        }
+
+        if (claims.includes("CanDelete")) {
+          canDelete.classList.remove("hidden");
+        }
+      }
+
+      init();
+    </script>
+  </body>
+</html>
