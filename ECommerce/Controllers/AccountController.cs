@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ECommerce.Business.Users.Dto;
+using ECommerce.Enitites.Identity;
+using ECommerce.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using ECommerce.Enitites.Identity;
-using ECommerce.Business.Users.Dto;
 
 namespace ECommerce.Controllers;
 
@@ -57,6 +59,8 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("[action]")]
+    [WorkingHours(9,18,"لا يمكنك تسجيل الدخول")]
+    [Audit("قام المستخدم {username} بتسجيل الدخول")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
         if (!ModelState.IsValid)

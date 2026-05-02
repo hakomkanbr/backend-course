@@ -10,6 +10,12 @@ using ECommerce.Repostories;
 using ECommerce.Repostories.Users;
 using ECommerce.Business.Users.Services;
 
+//public class MySettings
+//{
+//    public string AppName { get; set; }
+//    public string Version { get; set; }
+//}
+
 var builder = WebApplication.CreateBuilder(args);
 
 // ==================== SERVICES ====================
@@ -21,6 +27,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+//builder.Services.Configure<MySettings>(builder.Configuration.GetSection("MySetting"));
 
 // Identity
 builder.Services.AddIdentity<User, Role>(options =>
@@ -74,6 +82,13 @@ builder.Services.AddAuthentication(options =>
     - User Should have Depencies to "Tenant A"; 
 
     4 - ABAC
+
+
+
+
+    appsetting => لادارة الاعدادات
+    Environment => لفصل البيئات
+    Attributes => للتحكم بسلوك معين داخل التطبيق
 */
 
 builder.Services.AddAuthorization(options =>
